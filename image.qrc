@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/new/images"/>
+    <qresource prefix="/images">
+        <file>images/user.png</file>
+        <file>images/5.ico</file>
+        <file>images/loing_new.jpg</file>
+        <file>images/password_see.jpg</file>
+    </qresource>
+</RCC>
