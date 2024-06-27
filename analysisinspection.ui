@@ -2,8 +2,8 @@
  <author/>
  <comment/>
  <exportmacro/>
- <class>LineManage</class>
- <widget name="LineManage" class="QWidget">
+ <class>AnalysisInspection</class>
+ <widget name="AnalysisInspection" class="QWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

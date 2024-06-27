@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECharts Polar Gauge</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
+</head>
+<body>
+    <div id="main" style="width: 1000px; height: 900px;"></div>
+    <script>
+        const myChart = echarts.init(document.getElementById('main'));
+
+        function genColor(color, ratio, alpha) {
+            return 'rgba(' + color.r + ',' + color.g + ',' + color.b + ',' + alpha * ratio + ')';
+        }
+
+        const max = 100;
+        const value = Math.floor(Math.random() * max);
+        const peak = 0.8;
+        const minPeak = 0.1;
+
+        const color = { r: 127, g: 160, b: 200 };
+        const color2 = { r: 64, g: 255, b: 127 };
+
+        const panel = [];
+
+        const breakSize = 3;
+        const breakGap = 1;
+        let val = value;
+        while (val > 0) {
+            if (val >= breakSize + breakGap) {
+                panel.push({
+                    name: 'value',
+                    value: breakSize,
+                    itemStyle: {
+                        color: genColor(color2, 1, 1)
+                    }
+                });
+                panel.push({
+                    name: 'value',
+                    value: breakGap,
+                    itemStyle: {
+                        color: genColor(color, 0, 0)
+                    }
+                });
+                val -= breakSize + breakGap;
+            } else if (val >= breakSize) {
+                panel.push({
+                    name: 'value',
+                    value: breakSize,
+                    itemStyle: {
+                        color: genColor(color2, 1, 1)
+                    }
+                });
+                panel.push({
+                    name: 'value',
+                    value: val - breakSize,
+                    itemStyle: {
+                        color: genColor(color, 0, 0)
+                    }
+                });
+                val = 0;
+            } else {
+                panel.push({
+                    name: 'value',
+                    value: val,
+                    itemStyle: {
+                        color: genColor(color2, 1, 1)
+                    }
+                });
+                val = 0;
+            }
+        }
+
+        panel.push({
+            name: 'pad',
+            value: max - value > 0 ? max - value : 0,
+            itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
+                    { offset: 0, color: genColor(color, 0.1, 0.4) },
+                    { offset: 1, color: genColor(color, 0.6, 0.4) },
+                ])
+            }
+        });
+
+        const series = [];
+        series.push({
+            type: 'bar',
+            data: [{
+                value: max, itemStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
+                        { offset: 0, color: genColor(color, 0.1, 0.9) },
+                        { offset: 1, color: genColor(color, 0.6, 0.9) },
+                    ])
+                }
+            }],
+            coordinateSystem: 'polar',
+            barWidth: 4,
+            animation: false,
+            stack: '0',
+        });
+        series.push({
+            type: 'bar',
+            data: [{ value: max, itemStyle: { color: genColor(color, 1, 0) } }],
+            coordinateSystem: 'polar',
+            barWidth: 20,
+            animation: false,
+            stack: '1',
+        });
+
+        series.push({
+            type: 'gauge',
+            detail: { show: false },
+            data: [{ value: value }],
+            pointer: { show: false },
+            radius: "55%",
+            startAngle: 210,
+            endAngle: -30,
+            axisLine: {
+                show: false,
+                lineStyle: {
+                    color: [[1, new echarts.graphic.LinearGradient(0, 1, 0, 0, [
+                        { offset: 0, color: genColor(color, 0.1, 0.9) },
+                        { offset: 1, color: genColor(color, 0.6, 0.9) },
+                    ])]],
+                    width: 4
+                }
+            },
+            splitLine: {
+                show: false,
+            },
+            axisTick: {
+                show: false,
+            },
+            axisLabel: {
+                show: false
+            },
+        });
+
+        series.push({
+            type: 'gauge',
+            detail: { show: false },
+            data: [{ value: value }],
+            pointer: { show: false },
+            radius: "57%",
+            startAngle: 210,
+            endAngle: -30,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: [[1, genColor(color, 1, 0)]],
+                    width: 4
+                }
+            },
+            splitLine: {
+                show: true,
+                length: 5,
+                lineStyle: {
+                    color: genColor(color, 1, 1),
+                    width: 5,
+                }
+            },
+            axisTick: {
+                show: false
+            },
+            axisLabel: {
+                show: false,
+            },
+        });
+
+        series.push({
+            type: 'gauge',
+            detail: { show: false },
+            data: [{ value: value }],
+            pointer: { length: '53%' },
+            radius: "74%",
+            startAngle: 210,
+            endAngle: -30,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: [[1, new echarts.graphic.LinearGradient(0, 1, 0, 0, [
+                        { offset: 0, color: genColor(color, 0.1, 0.9) },
+                        { offset: 1, color: genColor(color, 0.6, 0.9) },
+                    ])]],
+                    width: 4
+                }
+            },
+            splitLine: {
+                show: false,
+            },
+            axisTick: {
+                show: false,
+            },
+            axisLabel: {
+                show: true,
+                distance: -18,
+                color: genColor(color, 1, 1),
+                fontFamily: 'VUI-Digital',
+                fontSize: 24,
+            },
+        });
+
+        for (let i = 0; i < panel.length; ++i) {
+            series.push({
+                name: panel[i].name,
+                type: 'bar',
+                data: [panel[i]],
+                coordinateSystem: 'polar',
+                barWidth: 30,
+                animation: false,
+                stack: '2',
+            });
+        }
+
+        const subtext = ['优', '中', '差', '危'];
+        const options = {
+            backgroundColor: '#000',
+            title: {
+                text: subtext[Math.floor(value / 30)],
+                textAlign: 'center',
+                textVerticalAlign: 'mid',
+                top: '45%',
+                left: '50%',
+                textStyle: {
+                    fontSize: 60,
+                    color: '#FFF',
+                },
+            },
+            angleAxis: {
+                max: 150,
+                interval: 100,
+                startAngle: -150,
+                type: 'value',
+                axisLine: {
+                    show: false,
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    show: false
+                },
+                splitLine: {
+                    show: false
+                },
+                splitArea: {
+                    show: false
+                }
+            },
+            radiusAxis: {
+                type: 'category',
+                z: 10,
+                axisLine: {
+                    show: false,
+                },
+                axisTick: {
+                    show: false,
+                },
+                axisLabel: {
+                    show: false,
+                },
+                splitLine: {
+                    show: false,
+                },
+                splitArea: {
+                    show: false,
+                }
+            },
+            polar: {
+                center: ['50%', '50%'],
+            },
+            radar: [
+            {
+                slience: true,
+                splitNumber: 1,
+                axisLine: {show: false},
+                splitLine: {show: false},
+                splitArea: {
+                    show: true,
+                    areaStyle: {
+                        color:  genColor(color2, 1, 0.9)
+                    }
+                },
+                indicator: [
+                    {max: 100},
+                    {max: 100},
+                    {max: 100},
+                    {max: 100},
+                    {max: 100},
+                    {max: 100}
+                ],
+                center: ['50%','65%'],
+                radius: 40
+            }],
+            series: series
+        };
+
+        myChart.setOption(options);
+    </script>
+</body>
+</html>
+
+

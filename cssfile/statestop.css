@@ -1,0 +1,12 @@
+"QPushButton {"
+                 "    border-radius: 2px;" /* 边框圆角 */
+                 "    background-color: #c85662;" /* 背景颜色 */
+                         "background-position: center;"
+                "qproperty-icon:  url(:/images/images/statebegin.png)  "
+                 "}"
+                 "QPushButton:hover {"
+                 "    background-color: #8c3c45;"
+                 "}"
+                 "QPushButton:pressed {"
+                 "    background-color: #502227;"
+                 "}"
